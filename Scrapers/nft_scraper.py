@@ -25,8 +25,8 @@ def save_to_csv(data, filename):
 def main():
     nft_data = get_nft_data()
     if nft_data:
-        save_to_csv(nft_data, 'scraped_data/ntf_data.csv')
-        print("Dane zapisane do pliku ntf_data.csv")
+        save_to_csv(nft_data, 'scraped_data/nft_data.csv')
+        print("Dane zapisane do pliku nft_data.csv")
     else:
         print("Nie udało się pobrać danych o NFT z CoinGecko")
 
