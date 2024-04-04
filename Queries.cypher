@@ -114,6 +114,20 @@ WHERE asset.name IN ['NYMEX', 'SHFE', 'LME']
 MATCH (type:StockMarketType {type: 'Raw Materials Exchange'})
 CREATE (asset)-[:IS_METAL_EXCHANGE]->(type)
 
+// SPECIALIZES_IN
+
+MATCH (a:AssetType {type: 'NFT'}), (t:StockMarketType {type: 'Cryptocurrency Exchange'})
+CREATE (t)-[:SPECIALIZES_IN]->(a)
+
+MATCH (a:AssetType {type: 'Crypto'}), (t:StockMarketType {type: 'Cryptocurrency Exchange'})
+CREATE (t)-[:SPECIALIZES_IN]->(a)
+
+MATCH (a:AssetType {type: 'Metal'}), (t:StockMarketType {type: 'Raw Materials Exchange'})
+CREATE (t)-[:SPECIALIZES_IN]->(a)
+
+MATCH (a:AssetType {type: 'ETF'}), (t:StockMarketType {type: 'Stock Exchange'})
+CREATE (t)-[:SPECIALIZES_IN]->(a)
+
 // ALLOWS_TRADE_METALS
 
 MATCH (asset:StockMarket)-[:IS_METAL_EXCHANGE]->(type:StockMarketType {type: 'Raw Materials Exchange'})
@@ -136,3 +150,26 @@ LIMIT 1
 MATCH (asset:StockMarket)-[:ALLOWS_TRADE_SHARES]-(type:StockMarketType)
 RETURN asset, type
 LIMIT 1
+
+// Count of Assets
+
+MATCH ()-[r:IS_CRYPTOCURRENCY|IS_NFT|IS_ETF|IS_METALS]-()
+RETURN
+    type(r) AS Asset,
+    COUNT(DISTINCT r) AS count
+
+// List of Country
+
+MATCH (market:StockMarket)
+WHERE market.country IS NOT NULL
+RETURN 
+    DISTINCT market.country AS country,
+    COUNT(*) AS count
+
+// Metals grammage count
+
+MATCH (metal: Metal_Asset)
+WHERE metal.grammage IS NOT NULL
+RETURN
+    DISTINCT metal.grammage AS grammage,
+    COUNT(*) AS count
