@@ -1,26 +1,27 @@
 // Import CryptoCurrency from csv
 
-LOAD CSV FROM 'file:///cryptocurrency_data.csv' AS row
-CREATE (:Crypto_Asset {name: row[0],symbol: row[1], price: row[2]});
+LOAD CSV WITH HEADERS FROM 'file:///cryptocurrency_data.csv' AS row
+CREATE (:Crypto_Asset {name: row.name, symbol: row.symbol, price: row.price});
+
 
 // Import NFT from csv
 
-LOAD CSV FROM 'file:///ntf_data.csv' AS row
+LOAD CSV WITH HEADERS FROM 'file:///ntf_data.csv' AS row
 CREATE (:NFT_Asset {name: row[0],symbol: row[1], asset_platform: row[2]});
 
 // Import ETF form csv
 
-LOAD CSV FROM 'file:///etf_data.csv' AS row
+LOAD CSV WITH HEADERS FROM 'file:///etf_data.csv' AS row
 CREATE (:ETF_Asset {name: row[1],symbol: row[0], price: row[2], exchangeName: row[4]});
 
 // Import Metals from csv
 
-LOAD CSV FROM 'file:///metals_data.csv' AS row
+LOAD CSV WITH HEADERSFROM 'file:///metals_data.csv' AS row
 CREATE (:Metal_Asset {name: row[0],symbol: row[1], grammage: row[2]});
 
 // Import CryptoCurrency Markets from csv
 
-LOAD CSV FROM 'file:///cryptostockmarket_data.csv' AS row
+LOAD CSV WITH HEADERS FROM 'file:///cryptostockmarket_data.csv' AS row
 CREATE (:StockMarket {name: row[0],yearEstablished: row[1], country: row[2]});
 
 // Added AssetType
@@ -38,16 +39,16 @@ CREATE (:StockMarketType {type: 'Stock Exchange'}),
 
 // Added StockMarket
 
-CREATE (:StockMarket {name: 'XETRA', yearEstablished: 1997, country: 'Germany'}),
-       (:StockMarket {name: 'NASDAQ', yearEstablished: 1971, country: 'United States'}),
-       (:StockMarket {name: 'LSE', yearEstablished: 1801, country: 'United Kingdom'}),
-       (:StockMarket {name: 'AMEX', yearEstablished: 1850, country: 'United States'}),
-       (:StockMarket {name: 'TSX', yearEstablished: 1852, country: 'Canada'}),
-       (:StockMarket {name: 'SIX', yearEstablished: 1850, country: 'Swiss'}),
-       (:StockMarket {name: 'NYSE', yearEstablished: 1817, country: 'United States'}),
-       (:StockMarket {name: 'NYMEX', yearEstablished: 1882, country: 'United States'}),
-       (:StockMarket {name: 'LME', yearEstablished: 1887, country: 'United Kingdom'}),
-       (:StockMarket {name: 'SHFE', yearEstablished: 1999, country: 'China'})
+CREATE (:StockMarket {name: 'XETRA', yearEstablished: "1997", country: 'Germany'}),
+       (:StockMarket {name: 'NASDAQ', yearEstablished: "1971", country: 'United States'}),
+       (:StockMarket {name: 'LSE', yearEstablished: "1801", country: 'United Kingdom'}),
+       (:StockMarket {name: 'AMEX', yearEstablished: "1850", country: 'United States'}),
+       (:StockMarket {name: 'TSX', yearEstablished: "1852", country: 'Canada'}),
+       (:StockMarket {name: 'SIX', yearEstablished: "1850", country: 'Swiss'}),
+       (:StockMarket {name: 'NYSE', yearEstablished: "1817", country: 'United States'}),
+       (:StockMarket {name: 'NYMEX', yearEstablished: "1882", country: 'United States'}),
+       (:StockMarket {name: 'LME', yearEstablished: "1887", country: 'United Kingdom'}),
+       (:StockMarket {name: 'SHFE', yearEstablished: "1999", country: 'China'})
 
 // IS_CryptoCurrency
 
@@ -173,3 +174,28 @@ WHERE metal.grammage IS NOT NULL
 RETURN
     DISTINCT metal.grammage AS grammage,
     COUNT(*) AS count
+
+// List of StockMarket relations
+
+MATCH (s:StockMarket)-[r]->(related)
+RETURN s, r, related
+
+// Newest StockMarket
+
+MATCH (s:StockMarket)
+WHERE s.yearEstablished IS NOT NULL AND s.yearEstablished <> "" AND s.yearEstablished =~ '\\d+'
+WITH MAX(TOINTEGER(s.yearEstablished)) AS newestYear
+MATCH (newestMarket:StockMarket {yearEstablished: toString(newestYear)})
+RETURN newestMarket.name AS NewestStockMarket, newestYear AS Year
+LIMIT 1
+
+// NFT with ethereum
+
+MATCH (n:NFT_Asset {asset_platform: 'ethereum'})
+RETURN COUNT(n) AS NumberOfAssets
+
+// NFT with ethereum list
+
+MATCH (n:NFT_Asset {asset_platform: 'ethereum'})
+RETURN n
+LIMIT 10
