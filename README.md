@@ -1,6 +1,20 @@
 # StockMarket
 Using the Neo4j graph database to represent elements and dependencies on stock exchanges and investment elements
 
+## Stored data
+- Investment funds
+- NFT
+- Cryptocurrencies
+- Raw Materials
+- Stock exchanges
+- Types of exchanges
+
+### Where was the data downloaded from?
+Data was downloaded using scrapers written in Python. All available scrapers are available in the Scrapers directory. However, the downloaded data is stored in the scraped_data folder in csv files
+
+### Project Launch
+To run it, download it locally to your computer and run the main.py file. This will download data from the Internet and then import it into the Neo4j database. For everything to work properly, you must first create the Neo4j database and configure its settings.
+
 ## Nodes
 ![](/assets/ETFAsset.png)
 ![](/assets/CryptoAsset.png)
