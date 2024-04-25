@@ -157,6 +157,22 @@ def add_stock_markets_to_neo4j():
             session.run(query)
         print("StockMarket nodes added to Neo4j.")
 
+def add_asset_categories_to_neo4j():
+    uri = "bolt://localhost:7687"
+    username = "neo4j"
+    password = "Qwerty123!"
+    driver = GraphDatabase.driver(uri, auth=(username, password))
+
+    with driver.session() as session:
+        print("Adding asset categories to Neo4j.")
+        queries = [
+            "CREATE (:Category {name: 'DigitalAssets'})",
+            "CREATE (:Category {name: 'FinancialInstruments'})",
+            "CREATE (:Category {name: 'PhysicalAssets'})"
+        ]
+        for query in queries:
+            session.run(query)
+        print("Asset categories added to Neo4j.")
 
 def main():
     scripts_to_run = ['cryptocurrency_scraper.py', 'cryptostockmarket_scraper.py', 'metals_scraper.py',
@@ -182,6 +198,7 @@ def main():
 
     add_stock_markets_to_neo4j()
 
+    add_asset_categories_to_neo4j()
 
 if __name__ == "__main__":
     main()

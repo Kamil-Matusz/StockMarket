@@ -50,6 +50,12 @@ CREATE (:StockMarket {name: 'XETRA', yearEstablished: "1997", country: 'Germany'
        (:StockMarket {name: 'LME', yearEstablished: "1887", country: 'United Kingdom'}),
        (:StockMarket {name: 'SHFE', yearEstablished: "1999", country: 'China'})
 
+// Added Categories
+
+CREATE (:Category {name: 'DigitalAssets'})
+CREATE (:Category {name: 'FinancialInstruments'})
+CREATE (:Category {name: 'PhysicalAssets'})
+
 // IS_CryptoCurrency
 
 MATCH (asset:Crypto_Asset)
@@ -151,6 +157,20 @@ LIMIT 1
 MATCH (asset:StockMarket)-[:ALLOWS_TRADE_SHARES]-(type:StockMarketType)
 RETURN asset, type
 LIMIT 1
+
+// HAS_CATEGORY
+
+MATCH (a:AssetType {type: 'NFT'}), (c:Category {name: 'DigitalAssets'})
+CREATE (a)-[:HAS_CATEGORY]->(c)
+
+MATCH (a:AssetType {type: 'Crypto'}), (c:Category {name: 'DigitalAssets'})
+CREATE (a)-[:HAS_CATEGORY]->(c)
+
+MATCH (a:AssetType {type: 'ETF'}), (c:Category {name: 'FinancialInstruments'})
+CREATE (a)-[:HAS_CATEGORY]->(c)
+
+MATCH (a:AssetType {type: 'Metal'}), (c:Category {name: 'DigitalAssets'})
+CREATE (a)-[:HAS_CATEGORY]->(c)
 
 // Count of Assets
 
