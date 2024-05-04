@@ -56,6 +56,12 @@ CREATE (:Category {name: 'DigitalAssets'})
 CREATE (:Category {name: 'FinancialInstruments'})
 CREATE (:Category {name: 'PhysicalAssets'})
 
+// Added Wallet
+
+CREATE (:Wallet {name: 'Balanced'}),
+       (:Wallet {name: 'High Risk'}),
+       (:Wallet {name: 'Low Risk'}),
+       (:Wallet {name: 'Retirement'})
 // IS_CryptoCurrency
 
 MATCH (asset:Crypto_Asset)
@@ -139,6 +145,44 @@ CREATE (t)-[:SPECIALIZES_IN]->(a)
 
 MATCH (asset:StockMarket)-[:IS_METAL_EXCHANGE]->(type:StockMarketType {type: 'Raw Materials Exchange'})
 CREATE (asset)<-[:ALLOWS_TRADE_METALS]-(type)
+
+// LOW_RISK_WALLET
+
+MATCH (w:Wallet {name: 'Low Risk'}), (e:ETF_Asset)
+WHERE e.name CONTAINS 'iShares'
+CREATE (w)-[:LOW_RISK_WALLET]->(e)
+
+MATCH (w:Wallet {name: 'Low Risk'}), (e:ETF_Asset)
+WHERE e.name CONTAINS 'Vanguard'
+CREATE (w)-[:LOW_RISK_WALLET]->(e)
+
+MATCH (w:Wallet {name: 'High Risk'}), (a:AssetType)
+WHERE a.type IN ['ETF']
+CREATE (w)-[:HIGH_RISK_WALLET]->(a)
+
+// HIGH_RISK_WALLET
+
+MATCH (w:Wallet {name: 'High Risk'}), (a:AssetType)
+WHERE a.type IN ['Crypto', 'NFT']
+CREATE (w)-[:HIGH_RISK_WALLET]->(a)
+
+MATCH (w:Wallet {name: 'High Risk'}), (a)
+WHERE a: NFT_Asset OR a: Crypto_Asset
+CREATE (w)-[:HIGH_RISK_WALLET]->(a)
+
+// BALANCED_WALLET
+
+MATCH (w:Wallet {name: 'Balanced'}), (e:Crypto_Asset)
+WHERE e.name CONTAINS 'Bitcoin' OR e.name CONTAINS 'Ethereum'
+CREATE (w)-[:BALANCED_WALLET]->(e)
+
+MATCH (w:Wallet {name: 'Balanced'}), (e:Metal_Asset)
+WHERE e.symbol CONTAINS 'Gold'
+CREATE (w)-[:BALANCED_WALLET]->(e)
+
+MATCH (w:Wallet {name: 'Balanced'}), (e:ETF_Asset)
+WHERE e.name CONTAINS 'iShares'
+CREATE (w)-[:BALANCED_WALLET]->(e)
 
 // 1:1 ALLOWS_TRADE_METALS
 
