@@ -62,6 +62,7 @@ CREATE (:Wallet {name: 'Balanced'}),
        (:Wallet {name: 'High Risk'}),
        (:Wallet {name: 'Low Risk'}),
        (:Wallet {name: 'Retirement'})
+
 // IS_CryptoCurrency
 
 MATCH (asset:Crypto_Asset)
@@ -156,11 +157,11 @@ MATCH (w:Wallet {name: 'Low Risk'}), (e:ETF_Asset)
 WHERE e.name CONTAINS 'Vanguard'
 CREATE (w)-[:LOW_RISK_WALLET]->(e)
 
+// HIGH_RISK_WALLET
+
 MATCH (w:Wallet {name: 'High Risk'}), (a:AssetType)
 WHERE a.type IN ['ETF']
 CREATE (w)-[:HIGH_RISK_WALLET]->(a)
-
-// HIGH_RISK_WALLET
 
 MATCH (w:Wallet {name: 'High Risk'}), (a:AssetType)
 WHERE a.type IN ['Crypto', 'NFT']
@@ -213,6 +214,12 @@ CREATE (a)-[:HAS_CATEGORY]->(c)
 MATCH (a:AssetType {type: 'ETF'}), (c:Category {name: 'FinancialInstruments'})
 CREATE (a)-[:HAS_CATEGORY]->(c)
 
+MATCH (a:AssetType {type: 'Metal'}), (c:Category {name: 'FinancialInstruments'})
+CREATE (a)-[:HAS_CATEGORY]->(c)
+
+MATCH (a:AssetType {type: 'Metal'}), (c:Category {name: 'FinancialInstruments'})
+CREATE (a)-[:HAS_CATEGORY]->(c)
+
 MATCH (a:AssetType {type: 'Metal'}), (c:Category {name: 'DigitalAssets'})
 CREATE (a)-[:HAS_CATEGORY]->(c)
 
@@ -263,3 +270,28 @@ RETURN COUNT(n) AS NumberOfAssets
 MATCH (n:NFT_Asset {asset_platform: 'ethereum'})
 RETURN n
 LIMIT 10
+
+// Low risk wallet elements
+
+MATCH (:Wallet {name: 'Low Risk'})-[:LOW_RISK_WALLET]->(e:ETF_Asset)
+RETURN COUNT(e) AS LowRiskWalletElements
+
+// High risk wallet elements
+
+MATCH p=()-[r:HIGH_RISK_WALLET]->() RETURN p
+
+// Count exchanges
+
+MATCH ()-[:IS_STOCK_EXCHANGE]->()
+RETURN 'IS_STOCK_EXCHANGE' AS relationship_type, COUNT(*) AS num_relationships
+UNION
+MATCH ()-[:IS_CRYPTOCURRENCY_EXCHANGE]->()
+RETURN 'IS_CRYPTOCURRENCY_EXCHANGE' AS relationship_type, COUNT(*) AS num_relationships
+UNION
+MATCH ()-[:IS_METAL_EXCHANGE]->()
+RETURN 'IS_METAL_EXCHANGE' AS relationship_type, COUNT(*) AS num_relationships
+
+// Categories elements
+
+MATCH p=()-[r:HAS_CATEGORY]->() RETURN p
+
