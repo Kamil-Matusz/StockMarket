@@ -26,7 +26,6 @@ To run it, download it locally to your computer and run the main.py file. This w
 ![](/assets/StockMarketType.png)
 ![](/assets/Category.png)
 ![](/assets/Wallet.png)
-![](/assets/Full-database.png)
 
 ## Relations
 ![](/assets/IS_CRYPTOCURRENCY.png)
@@ -41,3 +40,6 @@ To run it, download it locally to your computer and run the main.py file. This w
 ![](/assets/HAS_CATEGORY.png)
 ![](/assets/HIGH_RISK_WALLET.png)
 ![](/assets/LOW_RISK_WALLET.png)
+
+## Database
+![](/assets/Full-database.png)
